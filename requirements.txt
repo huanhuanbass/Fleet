@@ -1,6 +1,5 @@
-pip
 pandas
 numpy
 streamlit
 plotly
-ftplib
+ftplib==1.1
