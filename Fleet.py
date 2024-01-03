@@ -83,6 +83,73 @@ if 'fleet' not in st.session_state:
 
 st.text('Fleet Data Done!')
 
+#Getting Spot Freight Data
+@st.cache_data()
+def load_spot_data():
+    headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
+    dateto=pd.to_datetime('today')
+    datefrom=dateto-BDay(10)
+    params={'from':datefrom,'to':dateto}
+    urlcape='https://api.balticexchange.com/api/v1.3/feed/FDS8Y7DVQJOFDYW6SZUZWMGJCVMEWBLI/data'
+    urlpmx='https://api.balticexchange.com/api/v1.3/feed/FDS72H2FOQWJSDTJBVW55HJY1Z6W8ZJ0/data'
+    urlsmx='https://api.balticexchange.com/api/v1.3/feed/FDSQZHFHC242QBA1M4OMIW89Q1GBJGCL/data'
+
+    response = requests.get(urlcape, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    spotcape=pd.DataFrame(df.loc[0,'data'])
+    spotcape.set_index('date',inplace=True)
+    spotcape.rename(columns={'value':'C5TC'},inplace=True)
+
+    response = requests.get(urlpmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    spotpmx=pd.DataFrame(df.loc[0,'data'])
+    spotpmx.set_index('date',inplace=True)
+    spotpmx.rename(columns={'value':'P4TC'},inplace=True)
+
+    response = requests.get(urlsmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    spotsmx=pd.DataFrame(df.loc[0,'data'])
+    spotsmx.set_index('date',inplace=True)
+    spotsmx.rename(columns={'value':'S10TC'},inplace=True)
+
+    spotnew=pd.merge(spotcape,spotpmx,left_index=True,right_index=True,how='outer')
+    spotnew=pd.merge(spotnew,spotsmx,left_index=True,right_index=True,how='outer')
+    spotnew.index=pd.to_datetime(spotnew.index)
+
+    spot=pd.read_csv('spot.csv')
+    spotold=spot.set_index('Date')
+    spotold.index=pd.to_datetime(spotold.index)
+
+    spot=pd.concat([spotold,spotnew])
+    spot.reset_index(inplace=True)
+    spot.rename(columns={'index':'Date'},inplace=True)
+    spot=spot.drop_duplicates()
+    spot.set_index('Date',inplace=True)
+    spot=spot.dropna(subset=['P4TC'])
+
+    spot.to_csv('spot.csv',index_label='Date')
+
+    return spot
+
+spot=load_spot_data()
+
+
+#Getting Spot Freight Data if API doesn't work
+@st.cache_data()
+def load_spot_data_backup():
+    spot=pd.read_csv('Baltic Exchange - Historic Data.csv')
+    spot.set_index('Date',inplace=True)
+    spot.index=pd.to_datetime(spot.index,dayfirst=True)
+    #spot=spot[spot.index>=pd.to_datetime(date(2015,1,1))]
+
+    return spot
+
+
+#spot=load_spot_data_backup()
+
+
+if 'spot' not in st.session_state:
+    st.session_state['spot']=spot
 
 
 
