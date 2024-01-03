@@ -90,6 +90,7 @@ if 'fleet' not in st.session_state:
 st.text('Fleet Data Done!')
 
 #Getting Spot Freight Data
+st.text('----Getting Spot Data...')
 @st.cache_data()
 def load_spot_data():
     headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
@@ -157,7 +158,7 @@ def load_spot_data_backup():
 if 'spot' not in st.session_state:
     st.session_state['spot']=spot
 
-
+st.text('Spot Data Done!')
 
 #import fleet data
 fleet=st.session_state['fleet']
