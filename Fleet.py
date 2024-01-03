@@ -1,4 +1,7 @@
 import streamlit as st
+st.set_page_config(layout="wide")
+#st.write('project updated on 20231218')
+
 import plotly.express as px
 from plotly.subplots import make_subplots
 import pandas as pd
@@ -83,7 +86,7 @@ if 'fleet' not in st.session_state:
     st.session_state['fleet']=fleet
 
 
-st.text('Fleet Data Done!')
+st.text('Fleet Data Done! based on file '+filename)
 
 #Getting Spot Freight Data
 @st.cache_data()
