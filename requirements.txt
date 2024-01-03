@@ -2,4 +2,4 @@ pandas
 numpy
 streamlit
 plotly
-ftplib==1.1
+ftp
