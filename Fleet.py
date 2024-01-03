@@ -53,6 +53,7 @@ def load_fleet_data():
                 latestfile=f
                 
     filename=latestfile[0]
+    st.text(filename)
     txt='RETR '+filename
 
     with open(filename,'wb') as file:
@@ -86,7 +87,7 @@ if 'fleet' not in st.session_state:
     st.session_state['fleet']=fleet
 
 
-st.text('Fleet Data Done! based on file '+filename)
+st.text('Fleet Data Done!')
 
 #Getting Spot Freight Data
 @st.cache_data()
