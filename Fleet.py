@@ -4,6 +4,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 from datetime import date
 from datetime import timedelta
+import ftplib
 
 cutoff = pd.to_datetime('today')
 curryear=cutoff.year
