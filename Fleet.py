@@ -1,6 +1,6 @@
 import streamlit as st
 st.set_page_config(layout="wide")
-#st.write('project updated on 20231218')
+st.write('project updated on 20240103')
 
 import plotly.express as px
 from plotly.subplots import make_subplots
@@ -32,7 +32,7 @@ st.text('Dry Bulk Freight (Fleet Data) Interactive Dashboard')
 #Getting Fleet Data
 st.text('----Getting Fleet Data...')
 
-@st.cache_data()
+@st.cache_data(ttl='1d')
 def load_fleet_data():
 
     FTP_HOST='transfer.clarksons.com'
@@ -91,7 +91,7 @@ st.text('Fleet Data Done!')
 
 #Getting Spot Freight Data
 st.text('----Getting Spot Data...')
-@st.cache_data()
+@st.cache_data(ttl='1h')
 def load_spot_data():
     headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
     dateto=pd.to_datetime('today')
