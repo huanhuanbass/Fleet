@@ -7,6 +7,7 @@ from datetime import date
 from datetime import timedelta
 import ftplib
 from pandas.tseries.offsets import BDay
+import requests
 
 cutoff = pd.to_datetime('today')
 curryear=cutoff.year
