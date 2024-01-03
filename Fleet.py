@@ -133,7 +133,7 @@ def load_spot_data():
     spot.set_index('Date',inplace=True)
     spot=spot.dropna(subset=['P4TC'])
 
-    spot.to_csv('spot.csv',index_label='Date')
+    spot.to_csv('../spot.csv',index_label='Date')
 
     return spot
 
