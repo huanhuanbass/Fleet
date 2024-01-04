@@ -160,6 +160,12 @@ if 'spot' not in st.session_state:
 
 st.text('Spot Data Done!')
 
+
+st.button('Update Data',on_click=st.cache_data.clear())
+st.text('Data is automatically reloaded for potential updates every 24 hours.')
+st.text('If you would like to trigger the reload now, please click on the above "Update Data" button.')
+
+
 #import fleet data
 fleet=st.session_state['fleet']
 
