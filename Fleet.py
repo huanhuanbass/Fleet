@@ -182,10 +182,15 @@ freight=spot[['C5TC','P4TC','S10TC']]
 freight.rename(columns={'C5TC':'Capesize','P4TC':'Panamax','S10TC':'Supramax'},inplace=True)
 
 st.markdown('## **Delivery**')
+fleet_excl_order=fleet[fleet['Z11_MAIN_STATUS'].isin(['D','F'])]
 
+inclorder1=st.selectbox('Include Vessels Still in Orderbook?',options=['Y','N'],key='inclorder1')
 yr11=st.number_input('Input Start Year',min_value=2005,max_value=curryear,value=curryear-5,step=1,key='yr11')
 yr21=st.number_input('Input End Year',min_value=curryear,max_value=curryear+5,value=curryear,step=1,key='yr21')
-deliv=fleet.pivot_table(index=['Delivery Year','Delivery Month'],columns='Segment',values='Dwt',aggfunc='count')
+if inclorder1=='Y':
+    deliv=fleet.pivot_table(index=['Delivery Year','Delivery Month'],columns='Segment',values='Dwt',aggfunc='count')
+elif inclorder1=='N':
+    deliv=fleet_excl_order.pivot_table(index=['Delivery Year','Delivery Month'],columns='Segment',values='Dwt',aggfunc='count')
 deliv.sort_index(ascending=False,axis=1,inplace=True)
 deliv.drop(columns=['Others'],inplace=True)
 deliv.reset_index(inplace=True)
@@ -200,10 +205,14 @@ devplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plo
 st.plotly_chart(devplot)
 
 st.markdown('#### **----Subsegments**')
+inclorder2=st.selectbox('Include Vessels Still in Orderbook?',options=['Y','N'],key='inclorder2')
 yr12=st.number_input('Input Start Year',min_value=2005,max_value=curryear,value=curryear-5,step=1,key='yr12')
 yr22=st.number_input('Input End Year',min_value=curryear,max_value=curryear+5,value=curryear,step=1,key='yr22')
-size2=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax','Handysize'],key='sz2')
-delivsz=fleet[fleet['Segment']==size2]
+size2=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax','Handysize'],key='sz2')
+if inclorder2=='Y':
+    delivsz=fleet[fleet['Segment']==size2]
+if inclorder2=='N':
+    delivsz=fleet_excl_order[fleet_excl_order['Segment']==size2]
 delivsz=delivsz.pivot_table(index=['Delivery Year','Delivery Month'],columns='Subsegment',values='Dwt',aggfunc='count')
 delivsz=delivsz.loc[:, (delivsz!= 0).any(axis=0)]
 delivsz.sort_index(ascending=False,axis=1,inplace=True)
@@ -240,7 +249,7 @@ st.plotly_chart(demoplot)
 st.markdown('#### **----Subsegments**')
 yr14=st.number_input('Input Start Year',min_value=2005,max_value=curryear,value=curryear-5,step=1,key='yr14')
 yr24=st.number_input('Input End Year',min_value=curryear,max_value=curryear+5,value=curryear,step=1,key='yr24')
-size3=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax','Handysize'],key='sz3')
+size3=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax','Handysize'],key='sz3')
 demosz=fleet[fleet['Segment']==size3]
 demosz=demosz.pivot_table(index=['Demolition Year','Demolition Month'],columns='Subsegment',values='Dwt',aggfunc='count')
 demosz=demosz.loc[:, (demosz!= 0).any(axis=0)]
@@ -280,7 +289,7 @@ st.plotly_chart(orderplot)
 st.markdown('#### **----Subsegments**')
 yr16=st.number_input('Input Start Year',min_value=2005,max_value=curryear,value=curryear-5,step=1,key='yr16')
 yr26=st.number_input('Input End Year',min_value=curryear,max_value=curryear+5,value=curryear,step=1,key='yr26')
-size4=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax','Handysize'],key='sz4')
+size4=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax','Handysize'],key='sz4')
 ordersz=fleet[fleet['Segment']==size4]
 ordersz=ordersz.pivot_table(index=['Order Year','Order Month'],columns='Subsegment',values='Dwt',aggfunc='count')
 ordersz=ordersz.loc[:, (ordersz!= 0).any(axis=0)]
@@ -311,7 +320,7 @@ ordev=ordev.astype('Int64')
 st.write(ordev)
 
 st.markdown('## **Order Pace vs Freight Rate Correlation**')
-size8=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax'],key='sz8')
+size8=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax'],key='sz8')
 freq1=st.selectbox('Select Frequency',options=['Q','Y','M'],key='fq1')
 capefleet=fleet[fleet['Segment']==size8]
 capeorder=capefleet.pivot_table(index='Order Date',values='Dwt',aggfunc='count')
@@ -435,7 +444,7 @@ ageplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plo
 st.plotly_chart(ageplot)
 
 st.markdown('#### **----Subsegment**')
-size5=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax','Handysize'],key='sz5')
+size5=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax','Handysize'],key='sz5')
 currentsz=current[current['Segment']==size5]
 agesz=currentsz.pivot_table(index='Age',columns='Subsegment',values='Dwt',aggfunc='count')
 #agesz=agesz.loc[:, (agesz!= 0).any(axis=0)]
@@ -450,7 +459,7 @@ st.markdown('## **Fleet Summary**')
 
 yr17=st.number_input('Input Start Year',min_value=2005,max_value=curryear,value=curryear-5,step=1,key='yr17')
 yr27=st.number_input('Input End Year',min_value=curryear,max_value=curryear+5,value=curryear,step=1,key='yr27')
-size99=st.selectbox('Select Size',options=['Capesize','Panamax','Supramax','Handysize'],key='sz99')
+size99=st.selectbox('Select Size',options=['Panamax','Capesize','Supramax','Handysize'],key='sz99')
 segfleet=fleet[fleet['Segment']==size99]
 fleethistory=pd.DataFrame()
 
