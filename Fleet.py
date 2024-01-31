@@ -87,7 +87,94 @@ if 'fleet' not in st.session_state:
     st.session_state['fleet']=fleet
 
 
+
+@st.cache_data()
+def load_asset_price_data(ttl='1d'):
+
+    headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
+    dateto=pd.to_datetime('today')
+    datefrom=dateto-BDay(30)
+    params={'from':datefrom,'to':dateto}
+    url2hcape='https://api.balticexchange.com/api/v1.3/feed/FDSOZ7JPCOVRHG2EV3BSDDUXH0KDKOX7/data'
+    url2hpmx='https://api.balticexchange.com/api/v1.3/feed/FDSR3LG1DCVCYSGYY28IKBSXDFNBQRMP/data'
+    url2hsmx='https://api.balticexchange.com/api/v1.3/feed/FDSELVZGX8U6JWOM1C4ZSSLMTNO21H9W/data'
+    urlnbcape='https://api.balticexchange.com/api/v1.3/feed/FDS7OQ970E8XYNGKWUUQ57U7WR1LG2N1/data'
+    urlnbpmx='https://api.balticexchange.com/api/v1.3/feed/FDSGEX0YN6UD874QW3QGKQXPN16MVV7H/data'
+    urlnbsmx='https://api.balticexchange.com/api/v1.3/feed/FDSND28MFTR5T5YRSVCQF0HL5ZYNKK7Y/data'
+
+    response = requests.get(url2hcape, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    cape2h=pd.DataFrame(df.loc[0,'data'])
+    cape2h.set_index('date',inplace=True)
+    cape2h.rename(columns={'value':'Cape 5yr'},inplace=True)
+
+    response = requests.get(url2hpmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    pmx2h=pd.DataFrame(df.loc[0,'data'])
+    pmx2h.set_index('date',inplace=True)
+    pmx2h.rename(columns={'value':'PMX 5yr'},inplace=True)
+
+    response = requests.get(url2hsmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    smx2h=pd.DataFrame(df.loc[0,'data'])
+    smx2h.set_index('date',inplace=True)
+    smx2h.rename(columns={'value':'SMX 5yr'},inplace=True)
+
+    response = requests.get(urlnbcape, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    capenb=pd.DataFrame(df.loc[0,'data'])
+    capenb.set_index('date',inplace=True)
+    capenb['value']=capenb['value']/1000000
+    capenb.rename(columns={'value':'Cape NB'},inplace=True)
+
+    response = requests.get(urlnbpmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    pmxnb=pd.DataFrame(df.loc[0,'data'])
+    pmxnb.set_index('date',inplace=True)
+    pmxnb['value']=pmxnb['value']/1000000
+    pmxnb.rename(columns={'value':'PMX NB'},inplace=True)
+
+    response = requests.get(urlnbsmx, headers=headers,params=params)
+    df=pd.DataFrame(response.json())
+    smxnb=pd.DataFrame(df.loc[0,'data'])
+    smxnb.set_index('date',inplace=True)
+    smxnb['value']=smxnb['value']/1000000
+    smxnb.rename(columns={'value':'SMX NB'},inplace=True)
+
+    assetprice=pd.merge(cape2h,pmx2h,left_index=True,right_index=True,how='outer')
+    assetprice=pd.merge(assetprice,smx2h,left_index=True,right_index=True,how='outer')
+    assetprice=pd.merge(assetprice,capenb,left_index=True,right_index=True,how='outer')
+    assetprice=pd.merge(assetprice,pmxnb,left_index=True,right_index=True,how='outer')
+    assetprice=pd.merge(assetprice,smxnb,left_index=True,right_index=True,how='outer')
+    assetprice.index=pd.to_datetime(assetprice.index)
+    assetprice.index=assetprice.index.date
+
+    hist=pd.read_csv('assethist.csv')
+    hist.set_index('Date',inplace=True)
+    hist.index=pd.to_datetime(hist.index)
+    hist.index=hist.index.date
+
+    all=pd.concat([hist,assetprice])
+    all=all[~all.index.duplicated(keep='first')]
+    all.fillna(method='ffill',inplace=True)
+    all.to_csv('assethist.csv',index_label='Date')
+
+    return all
+
+
+asset=load_asset_price_data()
+
+
+if 'asset' not in st.session_state:
+    st.session_state['asset']=asset
+
+
+
 st.text('Fleet Data Done!')
+
+
+
+
 
 #Getting Spot Freight Data
 st.text('----Getting Spot Data...')
@@ -171,8 +258,10 @@ st.text('Data is automatically reloaded for potential updates every 24 hours.')
 st.text('If you would like to trigger the reload right now, please click on the above "Update Data" button.')
 
 
+
 #import fleet data
 fleet=st.session_state['fleet']
+asst=st.session_state['asset']
 
 #import spot data
 spot=st.session_state['spot']
@@ -506,3 +595,40 @@ subplot_fig.update_layout(title_font_color=plot_title_font_color,title_font_size
 st.plotly_chart(subplot_fig)
 
 #fleethistory.to_excel('pmx fleet.xlsx')
+
+
+st.markdown('## **Asset Price**')
+
+asset=asst.copy()
+
+asset.index=pd.to_datetime(asset.index)
+
+nbsl=st.multiselect('Select Segment for New Building Price',options=['Cape NB','PMX NB','SMX NB'],default=['PMX NB'],key='slnb')
+shsl=st.multiselect('Select Segment for Second Hand Price',options=['Cape 5yr','PMX 5yr','SMX 5yr'],default=['PMX 5yr'],key='slsh')
+rangelist=st.selectbox('Select Range',options=['Last Year to Date','Year to Date','Month to Date','All'])
+
+today = pd.to_datetime('today')
+if rangelist=='Last Year to Date':
+    rangestart=date(today.year-1,1,1)
+elif rangelist=='Month to Date':
+    rangestart=date(today.year,today.month,1)
+elif rangelist=='Year to Date':
+    rangestart=date(today.year,1,1)
+else:
+    rangestart=date(2015,1,1)
+
+
+assetsl=asset[nbsl+shsl]
+assetsl=assetsl[assetsl.index>=pd.to_datetime(rangestart)]
+
+
+figass=px.line(assetsl,width=1000,height=500,title='Vessel Asset Price')
+figass.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
+figass.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+st.plotly_chart(figass)
+
+
+
+
+
+
