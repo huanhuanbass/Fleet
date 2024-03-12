@@ -155,7 +155,7 @@ def load_asset_price_data(ttl='1d'):
     hist.index=hist.index.date
 
     all=pd.concat([hist,assetprice])
-    all=all[~all.index.duplicated(keep='first')]
+    all=all[~all.index.duplicated(keep='last')]
     all.fillna(method='ffill',inplace=True)
     all.to_csv('assethist.csv',index_label='Date')
 
