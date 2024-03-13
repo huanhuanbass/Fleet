@@ -12,6 +12,25 @@ import ftplib
 from pandas.tseries.offsets import BDay
 import requests
 
+import plotly.graph_objects as go
+
+draft_template = go.layout.Template()
+draft_template.layout.annotations = [
+    dict(
+        name="draft watermark",
+        text="COFCO Internal Use Only",
+        textangle=0,
+        opacity=0.1,
+        font=dict(color="black", size=70),
+        xref="paper",
+        yref="paper",
+        x=0.5,
+        y=0.5,
+        showarrow=False,
+    )
+]
+
+
 cutoff = pd.to_datetime('today')
 curryear=cutoff.year
 
@@ -291,6 +310,7 @@ deliv.set_index('Delivery Year_Month',inplace=True)
 devplot=px.bar(deliv,width=1000,height=500,title='Delivery by Size')
 devplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 devplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+devplot.update_layout(template=draft_template)
 st.plotly_chart(devplot)
 
 st.markdown('#### **----Subsegments**')
@@ -314,6 +334,7 @@ delivsz.set_index('Delivery Year_Month',inplace=True)
 devszplot=px.bar(delivsz,width=1000,height=500,title=size2+' Delivery by Subsegment')
 devszplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 devszplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+devszplot.update_layout(template=draft_template)
 st.plotly_chart(devszplot)
 
 st.markdown('## **Demolition**')
@@ -333,6 +354,7 @@ demo.set_index('Demolition Year_Month',inplace=True)
 demoplot=px.bar(demo,width=1000,height=500,title='Demolition by Size')
 demoplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 demoplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+demoplot.update_layout(template=draft_template)
 st.plotly_chart(demoplot)
 
 st.markdown('#### **----Subsegments**')
@@ -353,6 +375,7 @@ demosz.set_index('Demolition Year_Month',inplace=True)
 demoszplot=px.bar(demosz,width=1000,height=500,title=size3+' Demolition by Subsegment')
 demoszplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 demoszplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+demoszplot.update_layout(template=draft_template)
 st.plotly_chart(demoszplot)
 
 
@@ -373,6 +396,7 @@ order.set_index('Order Year_Month',inplace=True)
 orderplot=px.bar(order,width=1000,height=500,title='Order Book by Size')
 orderplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 orderplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+orderplot.update_layout(template=draft_template)
 st.plotly_chart(orderplot)
 
 st.markdown('#### **----Subsegments**')
@@ -393,6 +417,7 @@ ordersz.set_index('Order Year_Month',inplace=True)
 orderszplot=px.bar(ordersz,width=1000,height=500,title=size4+' Order Book by Subsegment')
 orderszplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 orderszplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+orderszplot.update_layout(template=draft_template)
 st.plotly_chart(orderszplot)
 
 st.markdown('## **Order vs Delivery Pattern**')
@@ -432,6 +457,7 @@ subplot_fig.layout.yaxis2.title='C5TC'
 subplot_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
 subplot_fig.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 subplot_fig.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+subplot_fig.update_layout(template=draft_template)
 st.plotly_chart(subplot_fig)
 
 
@@ -462,6 +488,7 @@ subplot_fig.layout.yaxis2.title='Freight'
 subplot_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
 subplot_fig.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 subplot_fig.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+subplot_fig.update_layout(template=draft_template)
 st.plotly_chart(subplot_fig)
 
 
@@ -519,6 +546,7 @@ subplot_fig.layout.yaxis2.title='Demoltion'
 subplot_fig.for_each_trace(lambda t: t.update(line=dict(color=t.marker.color)))
 subplot_fig.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 subplot_fig.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+subplot_fig.update_layout(template=draft_template)
 st.plotly_chart(subplot_fig)
 
 
@@ -530,6 +558,7 @@ age.drop(columns=['Others'],inplace=True)
 ageplot=px.bar(age,width=1000,height=500,title='Fleet Age Profile by Size')
 ageplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 ageplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+ageplot.update_layout(template=draft_template)
 st.plotly_chart(ageplot)
 
 st.markdown('#### **----Subsegment**')
@@ -542,6 +571,7 @@ agesz.drop(columns=['Others'],inplace=True)
 ageszplot=px.bar(agesz,width=1000,height=500,title=size5+' Age Profile by Subsegment')
 ageszplot.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 ageszplot.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+ageszplot.update_layout(template=draft_template)
 st.plotly_chart(ageszplot)
 
 st.markdown('## **Fleet Summary**')
@@ -592,6 +622,7 @@ subplot_fig.add_traces(fig1.data+fig2.data)
 subplot_fig.update_layout(title=size99+' Fleet Overview',width=1000,height=500)
 subplot_fig.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 subplot_fig.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+subplot_fig.update_layout(template=draft_template)
 st.plotly_chart(subplot_fig)
 
 #fleethistory.to_excel('pmx fleet.xlsx')
@@ -625,6 +656,7 @@ assetsl=assetsl[assetsl.index>=pd.to_datetime(rangestart)]
 figass=px.line(assetsl,width=1000,height=500,title='Vessel Asset Price')
 figass.update_xaxes(ticks=plot_ticks, tickwidth=plot_tickwidth,  ticklen=plot_ticklen)
 figass.update_layout(title_font_color=plot_title_font_color,title_font_size=plot_title_font_size,legend_font_size=plot_legend_font_size,xaxis=plot_axis,yaxis=plot_axis)
+figass.update_layout(template=draft_template)
 st.plotly_chart(figass)
 
 
