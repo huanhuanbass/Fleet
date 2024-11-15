@@ -51,7 +51,7 @@ st.text('Dry Bulk Freight (Fleet Data) Interactive Dashboard')
 #Getting Fleet Data
 st.text('----Getting Fleet Data...')
 
-
+@st.cache_data(ttl='24h')
 def load_fleet_data():
 
     FTP_HOST='transfer.clarksons.com'
@@ -107,8 +107,8 @@ if 'fleet' not in st.session_state:
 
 
 
-
-def load_asset_price_data(ttl='1d'):
+@st.cache_data(ttl='24h')
+def load_asset_price_data:
 
     headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
     dateto=pd.to_datetime('today')
@@ -198,6 +198,7 @@ st.text('Fleet Data Done!')
 #Getting Spot Freight Data
 st.text('----Getting Spot Data...')
 
+@st.cache_data(ttl='24h')
 def load_spot_data():
     headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
     dateto=pd.to_datetime('today')
