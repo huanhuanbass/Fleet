@@ -108,7 +108,7 @@ if 'fleet' not in st.session_state:
 
 
 @st.cache_data(ttl='24h')
-def load_asset_price_data:
+def load_asset_price_data():
 
     headers = {'x-apikey': 'FMNNXJKJMSV6PE4YA36EOAAJXX1WAH84KSWNU8PEUFGRHUPJZA3QTG1FLE09SXJF'}
     dateto=pd.to_datetime('today')
