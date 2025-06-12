@@ -54,33 +54,8 @@ st.text('----Getting Fleet Data...')
 @st.cache_data(ttl='24h')
 def load_fleet_data():
 
-    FTP_HOST='transfer.clarksons.com'
-    FTP_USER='Noble.data'
-    FTP_PASS='z026GXFB'
 
-    ftp=ftplib.FTP(host=FTP_HOST, user=FTP_USER, passwd=FTP_PASS, encoding='utf-8')
-
-    latestfile=None
-    for f in ftp.mlsd(facts=['type','modify','size']):
-        filetype=f[1]['type']
-        if not filetype=='file':
-            continue
-        if latestfile==None:
-            latestfile=f
-        else:
-            if latestfile[1]['modify']<=f[1]['modify']:
-                latestfile=f
-                
-    filename=latestfile[0]
-    st.text(filename)
-    txt='RETR '+filename
-
-    with open(filename,'wb') as file:
-        ftp.retrbinary(txt,file.write)
-        
-    ftp.quit()
-    raw = pd.read_csv(filename,compression='zip',encoding='unicode_escape')
-    #raw=pd.read_csv('Cofco_Dataset.csv',encoding='ISO-8859-1')
+    raw=pd.read_csv('Cofco_Dataset.csv',encoding='ISO-8859-1')
     fleet=raw[raw['P36_VESSEL_TYPE'].isin(['Bulk Carrier','Ore Carrier'])]
     fleet['Delivery Year']=fleet['A12_YEAR_BUILT']
     fleet['Delivery Month']=fleet['A13_MONTH_BUILT']
