@@ -89,9 +89,9 @@ def load_asset_price_data():
     dateto=pd.to_datetime('today')
     datefrom=dateto-BDay(30)
     params={'from':datefrom,'to':dateto}
-    url2hcape='https://api.balticexchange.com/api/v1.3/feed/FDSOZ7JPCOVRHG2EV3BSDDUXH0KDKOX7/data'
-    url2hpmx='https://api.balticexchange.com/api/v1.3/feed/FDSR3LG1DCVCYSGYY28IKBSXDFNBQRMP/data'
-    url2hsmx='https://api.balticexchange.com/api/v1.3/feed/FDSELVZGX8U6JWOM1C4ZSSLMTNO21H9W/data'
+    url2hcape='https://api.balticexchange.com/api/v1.3/feed/FDSY7TC50AL8H2YFDV5M31OLBPFZDNJ5/data'
+    url2hpmx='https://api.balticexchange.com/api/v1.3/feed/FDSE5D0KYBMGHCMSJ8RJCIT8B3ZOUWSN/data'
+    url2hsmx='https://api.balticexchange.com/api/v1.3/feed/FDSN1M0P4LY84OUTFWYC22RXPAEZ6CCO/data'
     urlnbcape='https://api.balticexchange.com/api/v1.3/feed/FDS7OQ970E8XYNGKWUUQ57U7WR1LG2N1/data'
     urlnbpmx='https://api.balticexchange.com/api/v1.3/feed/FDSGEX0YN6UD874QW3QGKQXPN16MVV7H/data'
     urlnbsmx='https://api.balticexchange.com/api/v1.3/feed/FDSND28MFTR5T5YRSVCQF0HL5ZYNKK7Y/data'
