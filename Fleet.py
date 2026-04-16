@@ -179,8 +179,8 @@ def load_spot_data():
     dateto=pd.to_datetime('today')
     datefrom=dateto-BDay(10)
     params={'from':datefrom,'to':dateto}
-    urlcape='https://api.balticexchange.com/api/v1.3/feed/FDSD9IGORSXSIDGR1DNGEK5AIYDSE90O/data'
-    urlpmx='https://api.balticexchange.com/api/v1.3/feed/FDSUSEGBUEKUX6OE6CW2LFTFSDXFG4KE/data'
+    urlcape='https://api.balticexchange.com/api/v1.3/feed/FDS2LK1T0Q6I3PQEGFVJTIM7AB4PE1O1/data'
+    urlpmx='https://api.balticexchange.com/api/v1.3/feed/FDS8ULWYAGKEPT0K313QXQRBFOK1JRV7/data'
     urlsmx='https://api.balticexchange.com/api/v1.3/feed/FDSQZHFHC242QBA1M4OMIW89Q1GBJGCL/data'
 
     response = requests.get(urlcape, headers=headers,params=params)
