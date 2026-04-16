@@ -214,7 +214,7 @@ def load_spot_data():
     spot.rename(columns={'index':'Date'},inplace=True)
     spot=spot.drop_duplicates()
     spot.set_index('Date',inplace=True)
-    spot=spot.dropna(subset=['P4TC'])
+    spot=spot.dropna(subset=['P5TC'])
 
     spot.to_csv('../spot.csv',index_label='Date')
 
