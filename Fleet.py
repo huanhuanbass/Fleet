@@ -193,7 +193,7 @@ def load_spot_data():
     df=pd.DataFrame(response.json())
     spotpmx=pd.DataFrame(df.loc[0,'data'])
     spotpmx.set_index('date',inplace=True)
-    spotpmx.rename(columns={'value':'P4TC'},inplace=True)
+    spotpmx.rename(columns={'value':'P5TC'},inplace=True)
 
     response = requests.get(urlsmx, headers=headers,params=params)
     df=pd.DataFrame(response.json())
@@ -262,8 +262,8 @@ asst=st.session_state['asset']
 spot=st.session_state['spot']
 
 
-freight=spot[['C5TC','P4TC','S10TC']]
-freight.rename(columns={'C5TC':'Capesize','P4TC':'Panamax','S10TC':'Supramax'},inplace=True)
+freight=spot[['C5TC','P5TC','S10TC']]
+freight.rename(columns={'C5TC':'Capesize','P5TC':'Panamax','S10TC':'Supramax'},inplace=True)
 
 st.markdown('## **Delivery**')
 fleet_excl_order=fleet[fleet['Z11_MAIN_STATUS'].isin(['D','F'])]
