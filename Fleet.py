@@ -118,21 +118,21 @@ def load_asset_price_data():
     df=pd.DataFrame(response.json())
     capenb=pd.DataFrame(df.loc[0,'data'])
     capenb.set_index('date',inplace=True)
-    capenb['value']=capenb['value']/1000000
+    capenb['value']=capenb['value']
     capenb.rename(columns={'value':'Cape NB'},inplace=True)
 
     response = requests.get(urlnbpmx, headers=headers,params=params)
     df=pd.DataFrame(response.json())
     pmxnb=pd.DataFrame(df.loc[0,'data'])
     pmxnb.set_index('date',inplace=True)
-    pmxnb['value']=pmxnb['value']/1000000
+    pmxnb['value']=pmxnb['value']
     pmxnb.rename(columns={'value':'PMX NB'},inplace=True)
 
     response = requests.get(urlnbsmx, headers=headers,params=params)
     df=pd.DataFrame(response.json())
     smxnb=pd.DataFrame(df.loc[0,'data'])
     smxnb.set_index('date',inplace=True)
-    smxnb['value']=smxnb['value']/1000000
+    smxnb['value']=smxnb['value']
     smxnb.rename(columns={'value':'SMX NB'},inplace=True)
 
     assetprice=pd.merge(cape2h,pmx2h,left_index=True,right_index=True,how='outer')
